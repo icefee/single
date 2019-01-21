@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>视频列表</title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        img, video {
+            display: block;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        ul, li {
+            list-style: none;
+        }
+        #root {
+            padding: 10px;
+        }
+        .list ul {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .list .link {
+            display: block;
+            width: 210px;
+            padding: 5px;
+            text-decoration: none;
+        }
+
+        .thumb {
+            width: 100%;
+            height: 120px;
+            overflow: hidden;
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .title {
+            width: 100%;
+        }
+
+        .title p {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 13px;
+            color: #444;
+        }
+        .player {
+            position: fixed;
+            width: 1000px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 200;
+            transition: all .4s;
+        }
+        .player video {
+            width: 100%;
+            height: auto;
+        }
+        .back-drop {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            background: rgb(0, 0, 0, .6);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        <div class="list">
+            <ul>
+                <li v-for="item in list">
+                    <a class="link" href="javascript:" @click="showPlayer(item)">
+                        <div class="thumb">
+                            <img :src="item.thumb"/>
+                        </div>
+                        <div class="title">
+                            <p :title="item.title">{{ item.title }}</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="back-drop" v-if="playerShow" @click="playerShow = false"></div>
+        <div class="player" v-if="playerShow">
+            <video type="video/mp4" :src="video.url" preload controls autoplay></video>
+        </div>
+    </div>
+    <script type="text/javascript" src="./node_modules/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="./vue.min.js"></script>
+    <script type="text/javascript">
+    var fetchJson = function(url, callback) {
+        axios.get(url)
+        .then(function(res) {
+            if(res.status == 200) {
+                callback(res.data)
+            }
+            else callback(res.status)
+        })
+        .catch(function(err) {
+            console.log(err);
+            callback(err)
+        })
+    }
+
+    new Vue({
+        el: '#root',
+        data: function() {
+            return {
+                list: [],
+                video: {
+                    title: '',
+                    thumb: '',
+                    url: ''
+                },
+                playerShow: false
+            }
+        },
+        methods: {
+            getList: function() {
+                var t = this;
+                fetchJson('./videos.json', function(res) {
+                    if(res) {
+                        t.list = res.result;
+                    }
+                    else {
+                        console.log(res)
+                    }
+                })
+            },
+            showPlayer: function(item) {
+                this.video.url = item.url;
+                this.playerShow = true;
+            }
+        },
+        mounted: function() {
+            this.getList()
+        }
+    })
+    </script>
+</body>
+</html>
