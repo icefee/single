@@ -132,8 +132,8 @@
                 </li>
             </ul>
         </div>
-        <div class="back-drop" v-show="playerShow" @click="playerShow = false"></div>
-        <div class="player" :class="{ show: playerShow }">
+        <div class="back-drop" :class="{ show: playerShow }" @click="playerShow = false"></div>
+        <div class="player" :class="{ show: loaded }" v-if="playerShow">
             <video type="video/mp4" :src="video.url" preload controls autoplay></video>
         </div>
     </div>
@@ -167,6 +167,7 @@
         el: '#root',
         data: function() {
             return {
+                loaded: false,
                 list: [],
                 video: {
                     title: '',
@@ -199,6 +200,7 @@
             }
         },
         mounted: function() {
+            this.loaded = true;
             this.getList()
         }
     })
