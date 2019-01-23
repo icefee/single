@@ -132,7 +132,7 @@
                 </li>
             </ul>
         </div>
-        <div class="back-drop" v-if="playerShow" @click="playerShow = false"></div>
+        <div class="back-drop" v-show="playerShow" @click="playerShow = false"></div>
         <div class="player" :class="{ show: playerShow }">
             <video type="video/mp4" :src="video.url" preload controls autoplay></video>
         </div>
