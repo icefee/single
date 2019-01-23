@@ -75,7 +75,11 @@
             transform: translate(-50%, -50%);
             z-index: 200;
             background: #fff;
+            display: none;
             transition: all .4s;
+        }
+        .show {
+            display: block;
         }
         .player video {
             width: 100%;
@@ -128,7 +132,7 @@
             </ul>
         </div>
         <div class="back-drop" v-if="playerShow" @click="playerShow = false"></div>
-        <div class="player" v-if="playerShow">
+        <div class="player" :class="{ show: playerShow }">
             <video type="video/mp4" :src="video.url" preload controls autoplay></video>
         </div>
     </div>
