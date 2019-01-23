@@ -135,6 +135,15 @@
     <script type="text/javascript" src="./axios.min.js"></script>
     <script type="text/javascript" src="./vue.min.js"></script>
     <script type="text/javascript">
+    var query = function(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = window.location.search.substr(1).match(reg);
+        if(r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+
     var fetchJson = function(url, callback) {
         axios.get(url)
         .then(function(res) {
@@ -165,7 +174,12 @@
         methods: {
             getList: function() {
                 var t = this;
-                fetchJson('./videos.json', function(res) {
+                var data = query('data');
+                var url = './videos.json';
+                if(data) {
+                    url = './' + data + '.json'
+                }
+                fetchJson(url, function(res) {
                     if(res) {
                         t.list = res.result;
                     }
